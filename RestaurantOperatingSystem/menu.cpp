@@ -51,3 +51,42 @@ void addItemToMenu() {
 
     menuFile.close();
 }
+
+void removeItemFromMenu() {
+    ifstream menuFile("data/menu.txt");
+    ofstream tempFile("data/temp.txt");
+
+    if (!menuFile || !tempFile) {
+        cout << "Error: Unable to open menu file.\n";
+        return;
+    }
+
+    string itemName, currentItem;
+    double price;
+    bool itemFound = false;
+
+    cout << "Enter item name to remove: ";
+    cin >> itemName;
+
+    // Прехвърляне на артикулите без този, който трябва да се премахне
+    while (menuFile >> currentItem >> price) {
+        if (currentItem == itemName) {
+            itemFound = true;
+            cout << currentItem << " removed from the menu.\n";
+        }
+        else {
+            tempFile << currentItem << " " << price << endl;
+        }
+    }
+
+    menuFile.close();
+    tempFile.close();
+
+    // Заместване на стария файл с новия
+    remove("data/menu.txt");
+    rename("data/temp.txt", "data/menu.txt");
+
+    if (!itemFound) {
+        cout << "Error: Item " << itemName << " not found in the menu.\n";
+    }
+}
