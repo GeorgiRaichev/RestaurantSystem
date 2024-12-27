@@ -28,3 +28,26 @@ void displayMenu() {
 
     file.close();
 }
+
+void addItemToMenu() {
+    ofstream menuFile("data/menu.txt", ios::app);  // Добавяне към края на файла
+
+    if (!menuFile) {
+        cout << "Error: Unable to open menu file.\n";
+        return;
+    }
+
+    string itemName;
+    double itemPrice;
+
+    cout << "Enter item name: ";
+    cin >> itemName;
+    cout << "Enter item price: ";
+    cin >> itemPrice;
+
+    // Записване в менюто
+    menuFile << itemName << " " << itemPrice << endl;
+    cout << itemName << " added to the menu for " << itemPrice << " лв.\n";
+
+    menuFile.close();
+}
