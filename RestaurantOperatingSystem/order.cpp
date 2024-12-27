@@ -103,4 +103,74 @@ void viewOrders() {
 	orderFile.close();
 }
 
+struct OrderItem {
+	string name;
+	int count;
+};
+
+// Функция за сортиране на поръчките
+void sortOrders(OrderItem orders[], int size) {
+	for (int i = 0; i < size - 1; i++) {
+		for (int j = i + 1; j < size; j++) {
+			if (orders[i].name > orders[j].name) {
+				OrderItem temp = orders[i];
+				orders[i] = orders[j];
+				orders[j] = temp;
+			}
+		}
+	}
+}
+
+void viewSortedOrders() {
+	ifstream orderFile("data/orders.txt");
+
+	if (!orderFile) {
+		cout << "Error: Orders file not found.\n";
+		return;
+	}
+
+	OrderItem orders[100]; // Масив за поръчките
+	int orderCount = 0;
+
+	string item;
+	double price;
+
+	// Четене на поръчките и добавяне към масива
+	while (orderFile >> item >> price) {
+		bool found = false;
+
+		// Проверка дали артикулът вече е добавен
+		for (int i = 0; i < orderCount; i++) {
+			if (orders[i].name == item) {
+				orders[i].count++;
+				found = true;
+				break;
+			}
+		}
+
+		// Добавяне на нов артикул, ако не е намерен
+		if (!found) {
+			orders[orderCount].name = item;
+			orders[orderCount].count = 1;
+			orderCount++;
+		}
+	}
+
+	orderFile.close();
+
+	if (orderCount == 0) {
+		cout << "No orders found.\n";
+		return;
+	}
+
+	// Сортиране на артикулите по азбучен ред
+	sortOrders(orders, orderCount);
+
+	// Извеждане на резултата
+	cout << "\n--- Sorted Orders ---\n";
+	for (int i = 0; i < orderCount; i++) {
+		cout << orders[i].name << " - " << orders[i].count << " orders\n";
+	}
+}
+
 
