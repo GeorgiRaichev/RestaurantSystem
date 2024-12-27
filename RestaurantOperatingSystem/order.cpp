@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime> 
 
 using namespace std;
 
@@ -195,6 +196,47 @@ void viewDailyRevenue() {
 	// Показване на резултата
 	cout << "\n--- Daily Revenue ---\n";
 	cout << "Total Revenue: " << totalRevenue << " лв.\n";
+}
+
+void generateReport() {
+	ifstream orderFile("data/orders.txt");
+
+	if (!orderFile) {
+		cout << "Error: Orders file not found.\n";
+		return;
+	}
+
+	double totalRevenue = 0;
+	string item;
+	double price;
+
+	// Изчисляване на общия оборот
+	while (orderFile >> item >> price) {
+		totalRevenue += price;
+	}
+	orderFile.close();
+
+	// Получаване на текущата дата
+	time_t now = time(0);
+	tm* ltm = localtime(&now);
+	int day = ltm->tm_mday;
+	int month = 1 + ltm->tm_mon;
+	int year = 1900 + ltm->tm_year;
+
+	// Записване на отчета във файл
+	ofstream reportFile("data/report.txt", ios::app);
+	reportFile << "Date: " << day << "/" << month << "/" << year
+		<< " - Total Revenue: " << totalRevenue << " лв.\n";
+	reportFile.close();
+
+	// Изчистване на orders.txt (зануляване на оборота)
+	ofstream clearOrders("data/orders.txt", ofstream::trunc);
+	clearOrders.close();
+
+	cout << "\n--- Report Generated ---\n";
+	cout << "Total Revenue for " << day << "/" << month << "/" << year
+		<< ": " << totalRevenue << " лв.\n";
+	cout << "Orders have been cleared.\n";
 }
 
 

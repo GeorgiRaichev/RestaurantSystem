@@ -6,5 +6,6 @@ void cancelOrder();            // Отмяна на поръчка
 void viewOrders();             // Преглед на минали поръчки
 void viewSortedOrders();       // Преглед на поръчки по азбучен ред и брой
 void viewDailyRevenue();       // Преглед на оборота за деня
+void generateReport();         // Генериране на отчет за деня
 
 #endif
