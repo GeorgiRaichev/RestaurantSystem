@@ -77,9 +77,21 @@ void cancelOrder() {
 	orderFile.close();
 	tempFile.close();
 
-	// Replace the old file with the new one
+	// Check if temp.txt was created successfully
+	ifstream checkTemp("temp.txt");
+	if (!checkTemp) {
+		cout << "Error: temp.txt was not created. Cancel operation failed.\n";
+		return;
+	}
+	checkTemp.close();
+
+	// Remove old file and rename temp.txt
+	if (remove("orders.txt") != 0) {
+		cout << "Error: Failed to remove old orders file.\n";
+	}
+
 	if (rename("temp.txt", "orders.txt") != 0) {
-		cout << "Error: Failed to rename orders file.\n";
+		cout << "Error: Failed to rename temp.txt to orders.txt.\n";
 	}
 }
 
