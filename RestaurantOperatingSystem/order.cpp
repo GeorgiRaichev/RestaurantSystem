@@ -7,8 +7,8 @@ using namespace std;
 
 // Function to add an order
 void addOrder() {
-	ifstream menuFile("data/menu.txt");  // Open the menu file
-	ofstream orderFile("data/orders.txt", ios::app);  // Append the order to the file
+	ifstream menuFile("menu.txt");  // Open the menu file
+	ofstream orderFile("orders.txt", ios::app);  // Append the order to the file
 
 	if (!menuFile) {
 		cout << "Error: Menu file not found.\n";
@@ -43,8 +43,8 @@ void addOrder() {
 
 // Function to cancel an order
 void cancelOrder() {
-	ifstream orderFile("data/orders.txt");
-	ofstream tempFile("data/temp.txt");
+	ifstream orderFile("orders.txt");
+	ofstream tempFile("temp.txt");
 
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
@@ -78,14 +78,14 @@ void cancelOrder() {
 	tempFile.close();
 
 	// Replace the old file with the new one
-	if (rename("data/temp.txt", "data/orders.txt") != 0) {
+	if (rename("temp.txt", "orders.txt") != 0) {
 		cout << "Error: Failed to rename orders file.\n";
 	}
 }
 
 // Function to view all past orders
 void viewOrders() {
-	ifstream orderFile("data/orders.txt");
+	ifstream orderFile("orders.txt");
 
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
@@ -129,7 +129,7 @@ void sortOrders(OrderItem orders[], int size) {
 
 // Function to view sorted orders by item name and count
 void viewSortedOrders() {
-	ifstream orderFile("data/orders.txt");
+	ifstream orderFile("orders.txt");
 
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
@@ -182,7 +182,7 @@ void viewSortedOrders() {
 
 // Function to view daily revenue
 void viewDailyRevenue() {
-	ifstream orderFile("data/orders.txt");
+	ifstream orderFile("orders.txt");
 
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
@@ -207,7 +207,7 @@ void viewDailyRevenue() {
 
 // Function to generate a daily report
 void generateReport() {
-	ifstream orderFile("data/orders.txt");
+	ifstream orderFile("orders.txt");
 
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
@@ -234,13 +234,13 @@ void generateReport() {
 	int year = 1900 + ltm.tm_year;
 
 	// Write the report to file
-	ofstream reportFile("data/report.txt", ios::app);
+	ofstream reportFile("report.txt", ios::app);
 	reportFile << "Date: " << day << "/" << month << "/" << year
 		<< " - Total Revenue: " << totalRevenue << " lv.\n";
 	reportFile.close();
 
 	// Clear orders.txt (reset daily revenue)
-	ofstream clearOrders("data/orders.txt", ofstream::trunc);
+	ofstream clearOrders("orders.txt", ofstream::trunc);
 	clearOrders.close();
 
 	cout << "\n--- Report Generated ---\n";
@@ -250,7 +250,7 @@ void generateReport() {
 }
 
 void viewTotalRevenueByDate() {
-	ifstream reportFile("data/report.txt");
+	ifstream reportFile("report.txt");
 
 	if (!reportFile) {
 		cout << "Error: Report file not found.\n";

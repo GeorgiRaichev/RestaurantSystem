@@ -6,7 +6,7 @@ using namespace std;
 
 // Function to check inventory availability
 void checkInventory() {
-    ifstream inventoryFile("data/inventory.txt");
+    ifstream inventoryFile("inventory.txt");
 
     if (!inventoryFile) {
         cout << "Error: Inventory file not found.\n";
@@ -26,8 +26,8 @@ void checkInventory() {
 
 // Function to issue a product from inventory
 void issueProduct() {
-    ifstream inventoryFile("data/inventory.txt");
-    ofstream tempFile("data/temp.txt");
+    ifstream inventoryFile("inventory.txt");
+    ofstream tempFile("temp.txt");
 
     if (!inventoryFile || !tempFile) {
         cout << "Error: Unable to open inventory file.\n";
@@ -65,16 +65,16 @@ void issueProduct() {
     tempFile.close();
 
     // Replace the old file with the new one
-    remove("data/inventory.txt");
-    if (rename("data/temp.txt", "data/inventory.txt") != 0) {
+    remove("inventory.txt");
+    if (rename("temp.txt", "inventory.txt") != 0) {
         cout << "Error: Failed to rename temp file to inventory.txt.\n";
     }
 }
 
 // Function to add a product to the inventory
 void addInventory() {
-    ifstream inventoryFile("data/inventory.txt");
-    ofstream tempFile("data/temp.txt");
+    ifstream inventoryFile("inventory.txt");
+    ofstream tempFile("temp.txt");
 
     if (!inventoryFile || !tempFile) {
         cout << "Error: Unable to open inventory file.\n";
@@ -111,8 +111,8 @@ void addInventory() {
     tempFile.close();
 
     // Replace the old file with the new one
-    remove("data/inventory.txt");
-    if (rename("data/temp.txt", "data/inventory.txt") != 0) {
+    remove("inventory.txt");
+    if (rename("temp.txt", "inventory.txt") != 0) {
         cout << "Error: Failed to rename temp file to inventory.txt.\n";
     }
 }

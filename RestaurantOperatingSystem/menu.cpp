@@ -7,7 +7,7 @@ using namespace std;
 
 // Function to display the current menu with price formatting
 void displayMenu() {
-    ifstream file("data/menu.txt");
+    ifstream file("menu.txt");
 
     if (!file) {
         cout << "Error: Menu file not found.\n";
@@ -31,7 +31,7 @@ void displayMenu() {
 
 // Function to add a new item to the menu
 void addItemToMenu() {
-    ofstream menuFile("data/menu.txt", ios::app);  // Append to the end of the file
+    ofstream menuFile("menu.txt", ios::app);  // Append to the end of the file
 
     if (!menuFile) {
         cout << "Error: Unable to open menu file.\n";
@@ -55,8 +55,8 @@ void addItemToMenu() {
 
 // Function to remove an item from the menu
 void removeItemFromMenu() {
-    ifstream menuFile("data/menu.txt");
-    ofstream tempFile("data/temp.txt");
+    ifstream menuFile("menu.txt");
+    ofstream tempFile("temp.txt");
 
     if (!menuFile || !tempFile) {
         cout << "Error: Unable to open menu file.\n";
@@ -85,7 +85,7 @@ void removeItemFromMenu() {
     tempFile.close();
 
     // Replace the old file with the new one
-    if (rename("data/temp.txt", "data/menu.txt") != 0) {
+    if (rename("temp.txt", "menu.txt") != 0) {
         cout << "Error: Failed to rename menu file.\n";
     }
 
