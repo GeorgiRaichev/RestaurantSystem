@@ -43,9 +43,8 @@ void addOrder() {
 
 // Function to cancel an order
 void cancelOrder() {
+	// Първи проход: Намерете номера на реда на последната поръчка за дадения артикул
 	ifstream orderFile("orders.txt");
-	ofstream tempFile("temp.txt");
-
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
 		return;
@@ -55,43 +54,66 @@ void cancelOrder() {
 	cout << "Enter item name to cancel: ";
 	cin >> itemName;
 
-	string orderItem;
-	double price;
-	bool orderFound = false;
+	string line;
+	int lineNumber = 0;
+	int lastOccurrenceLine = -1;
 
-	// Transfer orders except the one to be deleted
-	while (orderFile >> orderItem >> price) {
-		if (orderItem == itemName) {
-			cout << itemName << " order canceled successfully.\n";
-			orderFound = true;
-		}
-		else {
-			tempFile << orderItem << " " << price << " lv." << endl;
+	while (getline(orderFile, line)) {
+		lineNumber++;
+		// Предполага се, че името на артикула е първата дума в реда
+		size_t pos = line.find(' ');
+		if (pos != string::npos) {
+			string currentItem = line.substr(0, pos);
+			if (currentItem == itemName) {
+				lastOccurrenceLine = lineNumber;
+			}
 		}
 	}
-
-	if (!orderFound) {
-		cout << "Error: Order for " << itemName << " not found.\n";
-	}
-
 	orderFile.close();
-	tempFile.close();
 
-	// Check if temp.txt was created successfully
-	ifstream checkTemp("temp.txt");
-	if (!checkTemp) {
-		cout << "Error: temp.txt was not created. Cancel operation failed.\n";
+	if (lastOccurrenceLine == -1) {
+		cout << "Error: Order for " << itemName << " not found.\n";
 		return;
 	}
-	checkTemp.close();
 
-	// Remove old file and rename temp.txt
+	// Втори проход: Копирайте всички редове във временен файл, като прескочите последната поява
+	ifstream orderFileSecondPass("orders.txt");
+	if (!orderFileSecondPass) {
+		cout << "Error: Orders file not found on second pass.\n";
+		return;
+	}
+
+	ofstream tempFile("temp.txt");
+	if (!tempFile) {
+		cout << "Error: Unable to create temp file.\n";
+		return;
+	}
+
+	int currentLine = 0;
+	bool canceled = false;
+	while (getline(orderFileSecondPass, line)) {
+		currentLine++;
+		if (currentLine == lastOccurrenceLine && !canceled) {
+			// Прескачаме този ред (т.е., го изтриваме)
+			cout << itemName << " order canceled successfully.\n";
+			canceled = true;
+			continue;
+		}
+		tempFile << line << endl;
+	}
+
+	orderFileSecondPass.close();
+	tempFile.close();
+
+	// Замяна на стария файл с обновения
 	if (remove("orders.txt") != 0) {
 		cout << "Error: Failed to remove old orders file.\n";
+		return;
 	}
 
 	if (rename("temp.txt", "orders.txt") != 0) {
 		cout << "Error: Failed to rename temp.txt to orders.txt.\n";
+		return;
 	}
 }
 
