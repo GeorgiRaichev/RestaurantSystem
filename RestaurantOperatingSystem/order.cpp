@@ -173,4 +173,28 @@ void viewSortedOrders() {
 	}
 }
 
+void viewDailyRevenue() {
+	ifstream orderFile("data/orders.txt");
+
+	if (!orderFile) {
+		cout << "Error: Orders file not found.\n";
+		return;
+	}
+
+	string item;
+	double price;
+	double totalRevenue = 0;
+
+	// Сумиране на цените от всички поръчки
+	while (orderFile >> item >> price) {
+		totalRevenue += price;
+	}
+
+	orderFile.close();
+
+	// Показване на резултата
+	cout << "\n--- Daily Revenue ---\n";
+	cout << "Total Revenue: " << totalRevenue << " лв.\n";
+}
+
 
