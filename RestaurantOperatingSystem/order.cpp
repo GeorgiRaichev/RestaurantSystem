@@ -77,3 +77,30 @@ void cancelOrder() {
 	// Заместване на стария файл с новия
 	remove("data/orders.txt");
 	rename("data/temp.txt", "data/orders.txt");
+}
+void viewOrders() {
+	ifstream orderFile("data/orders.txt");
+
+	if (!orderFile) {
+		cout << "Error: Orders file not found.\n";
+		return;
+	}
+
+	string item;
+	double price;
+	bool hasOrders = false;
+
+	cout << "\n--- Past Orders ---\n";
+	while (orderFile >> item >> price) {
+		cout << item << " - " << price << " лв." << endl;
+		hasOrders = true;
+	}
+
+	if (!hasOrders) {
+		cout << "No orders found.\n";
+	}
+
+	orderFile.close();
+}
+
+

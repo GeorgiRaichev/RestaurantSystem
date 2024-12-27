@@ -3,5 +3,6 @@
 
 void addOrder();       // Добавяне на поръчка
 void cancelOrder();    // Отмяна на поръчка
+void viewOrders();     // Преглед на минали поръчки
 
 #endif
