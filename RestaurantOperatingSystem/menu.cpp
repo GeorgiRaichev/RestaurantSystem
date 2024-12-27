@@ -1,11 +1,11 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
-#include <iomanip>  // За форматиране на изхода
+#include <iomanip>  // For output formatting
 
 using namespace std;
 
-// Функция за показване на текущото меню с формат за лева
+// Function to display the current menu with price formatting
 void displayMenu() {
     ifstream file("data/menu.txt");
 
@@ -18,19 +18,20 @@ void displayMenu() {
     double price;
 
     cout << "\n--- Current Menu ---\n";
-    cout << left << setw(20) << "Item" << right << setw(10) << "Price (лв.)" << endl;
+    cout << left << setw(20) << "Item" << right << setw(10) << "Price (lv.)" << endl;
     cout << "-------------------------------\n";
 
     while (file >> item >> price) {
         cout << left << setw(20) << item
-            << right << setw(8) << fixed << setprecision(2) << price << " лв." << endl;
+            << right << setw(8) << fixed << setprecision(2) << price << " lv." << endl;
     }
 
     file.close();
 }
 
+// Function to add a new item to the menu
 void addItemToMenu() {
-    ofstream menuFile("data/menu.txt", ios::app);  // Добавяне към края на файла
+    ofstream menuFile("data/menu.txt", ios::app);  // Append to the end of the file
 
     if (!menuFile) {
         cout << "Error: Unable to open menu file.\n";
@@ -45,13 +46,14 @@ void addItemToMenu() {
     cout << "Enter item price: ";
     cin >> itemPrice;
 
-    // Записване в менюто
+    // Write to the menu
     menuFile << itemName << " " << itemPrice << endl;
-    cout << itemName << " added to the menu for " << itemPrice << " лв.\n";
+    cout << itemName << " added to the menu for " << itemPrice << " lv.\n";
 
     menuFile.close();
 }
 
+// Function to remove an item from the menu
 void removeItemFromMenu() {
     ifstream menuFile("data/menu.txt");
     ofstream tempFile("data/temp.txt");
@@ -68,7 +70,7 @@ void removeItemFromMenu() {
     cout << "Enter item name to remove: ";
     cin >> itemName;
 
-    // Прехвърляне на артикулите без този, който трябва да се премахне
+    // Transfer items except the one to be removed
     while (menuFile >> currentItem >> price) {
         if (currentItem == itemName) {
             itemFound = true;
@@ -82,9 +84,10 @@ void removeItemFromMenu() {
     menuFile.close();
     tempFile.close();
 
-    // Заместване на стария файл с новия
-    remove("data/menu.txt");
-    rename("data/temp.txt", "data/menu.txt");
+    // Replace the old file with the new one
+    if (rename("data/temp.txt", "data/menu.txt") != 0) {
+        cout << "Error: Failed to rename menu file.\n";
+    }
 
     if (!itemFound) {
         cout << "Error: Item " << itemName << " not found in the menu.\n";

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-// Функция за проверка на складовите наличности
+// Function to check inventory availability
 void checkInventory() {
     ifstream inventoryFile("data/inventory.txt");
 
@@ -24,7 +24,7 @@ void checkInventory() {
     inventoryFile.close();
 }
 
-// Функция за изписване на продукт от склада
+// Function to issue a product from inventory
 void issueProduct() {
     ifstream inventoryFile("data/inventory.txt");
     ofstream tempFile("data/temp.txt");
@@ -64,12 +64,14 @@ void issueProduct() {
     inventoryFile.close();
     tempFile.close();
 
-    // Заместване на стария файл с новия
+    // Replace the old file with the new one
     remove("data/inventory.txt");
-    rename("data/temp.txt", "data/inventory.txt");
+    if (rename("data/temp.txt", "data/inventory.txt") != 0) {
+        cout << "Error: Failed to rename temp file to inventory.txt.\n";
+    }
 }
 
-// Функция за добавяне на продукт в склада
+// Function to add a product to the inventory
 void addInventory() {
     ifstream inventoryFile("data/inventory.txt");
     ofstream tempFile("data/temp.txt");
@@ -96,7 +98,7 @@ void addInventory() {
         tempFile << currentItem << " " << existingQuantity << endl;
     }
 
-    // Ако продуктът не е намерен, добавяме нов ред
+    // If the product is not found, add a new line
     if (!itemFound) {
         tempFile << itemName << " " << quantity << endl;
         cout << itemName << " added to inventory with quantity " << quantity << endl;
@@ -108,7 +110,9 @@ void addInventory() {
     inventoryFile.close();
     tempFile.close();
 
-    // Заместване на стария файл с новия
+    // Replace the old file with the new one
     remove("data/inventory.txt");
-    rename("data/temp.txt", "data/inventory.txt");
+    if (rename("data/temp.txt", "data/inventory.txt") != 0) {
+        cout << "Error: Failed to rename temp file to inventory.txt.\n";
+    }
 }

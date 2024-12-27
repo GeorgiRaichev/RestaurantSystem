@@ -6,14 +6,14 @@
 
 using namespace std;
 
-void showWaiterMenu();  // Меню за сервитьор
-void showManagerMenu(); // Меню за управител
-bool isManager = false; // Следи дали потребителят е управител
+void showWaiterMenu();  // Waiter menu
+void showManagerMenu(); // Manager menu
+bool isManager = false; // Tracks if the user is a manager
 
 int main() {
     string userType;
 
-    // Избор на тип потребител
+    // Select user type
     while (true) {
         cout << "Enter user type (waiter/manager): ";
         cin >> userType;
@@ -34,7 +34,7 @@ int main() {
     int choice;
     bool exitProgram = false;
 
-    // Основен цикъл за менюто
+    // Main menu loop
     while (!exitProgram) {
         if (isManager) {
             showManagerMenu();
@@ -45,7 +45,7 @@ int main() {
 
         cin >> choice;
 
-        // Навигация и избор според потребителя
+        // Navigation and user selection
         if (isManager) {
             switch (choice) {
             case 1: displayMenu(); break;
@@ -73,11 +73,11 @@ int main() {
             switch (choice) {
             case 1: displayMenu(); break;
             case 2: addOrder(); break;
-            case 4: cancelOrder(); break;
-            case 5: viewOrders(); break;
-            case 6: viewSortedOrders(); break;
-            case 7: viewDailyRevenue(); break;
-            case 8:
+            case 3: cancelOrder(); break;
+            case 4: viewOrders(); break;
+            case 5: viewSortedOrders(); break;
+            case 6: viewDailyRevenue(); break;
+            case 7:
                 cout << "Exiting system. Goodbye!\n";
                 exitProgram = true;
                 break;
@@ -90,20 +90,20 @@ int main() {
     return 0;
 }
 
-// Меню за сервитьор
+// Waiter menu
 void showWaiterMenu() {
     cout << "\n=== Waiter Menu ===\n";
     cout << "1. View Menu\n";
     cout << "2. Add Order\n";
-    cout << "4. Cancel Order\n";
-    cout << "5. View Past Orders\n";
-    cout << "6. View Sorted Orders and Item Counts\n";
-    cout << "7. View Daily Revenue\n";
-    cout << "8. Exit\n";
+    cout << "3. Cancel Order\n";
+    cout << "4. View Past Orders\n";
+    cout << "5. View Sorted Orders and Item Counts\n";
+    cout << "6. View Daily Revenue\n";
+    cout << "7. Exit\n";
     cout << "Choose an option: ";
 }
 
-// Меню за управител
+// Manager menu
 void showManagerMenu() {
     cout << "\n=== Manager Menu ===\n";
     cout << "1. View Menu\n";

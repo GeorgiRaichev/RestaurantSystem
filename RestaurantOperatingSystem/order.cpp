@@ -5,10 +5,10 @@
 
 using namespace std;
 
-// Функция за добавяне на поръчка
+// Function to add an order
 void addOrder() {
-	ifstream menuFile("data/menu.txt");  // Отваряне на менюто
-	ofstream orderFile("data/orders.txt", ios::app);  // Запис на поръчка в края на файла
+	ifstream menuFile("data/menu.txt");  // Open the menu file
+	ofstream orderFile("data/orders.txt", ios::app);  // Append the order to the file
 
 	if (!menuFile) {
 		cout << "Error: Menu file not found.\n";
@@ -23,12 +23,12 @@ void addOrder() {
 	double price;
 	bool itemFound = false;
 
-	// Търсене на артикул в менюто
+	// Search for the item in the menu
 	while (menuFile >> menuItem >> price) {
 		if (menuItem == itemName) {
 			itemFound = true;
-			orderFile << itemName << " " << price << " лв." << endl;
-			cout << itemName << " added to orders for " << price << " лв.\n";
+			orderFile << itemName << " " << price << " lv." << endl;
+			cout << itemName << " added to orders for " << price << " lv.\n";
 			break;
 		}
 	}
@@ -40,6 +40,8 @@ void addOrder() {
 	menuFile.close();
 	orderFile.close();
 }
+
+// Function to cancel an order
 void cancelOrder() {
 	ifstream orderFile("data/orders.txt");
 	ofstream tempFile("data/temp.txt");
@@ -57,14 +59,14 @@ void cancelOrder() {
 	double price;
 	bool orderFound = false;
 
-	// Прехвърляне на поръчките, без тази за изтриване
+	// Transfer orders except the one to be deleted
 	while (orderFile >> orderItem >> price) {
 		if (orderItem == itemName) {
 			cout << itemName << " order canceled successfully.\n";
 			orderFound = true;
 		}
 		else {
-			tempFile << orderItem << " " << price << " лв." << endl;
+			tempFile << orderItem << " " << price << " lv." << endl;
 		}
 	}
 
@@ -75,10 +77,13 @@ void cancelOrder() {
 	orderFile.close();
 	tempFile.close();
 
-	// Заместване на стария файл с новия
-	remove("data/orders.txt");
-	rename("data/temp.txt", "data/orders.txt");
+	// Replace the old file with the new one
+	if (rename("data/temp.txt", "data/orders.txt") != 0) {
+		cout << "Error: Failed to rename orders file.\n";
+	}
 }
+
+// Function to view all past orders
 void viewOrders() {
 	ifstream orderFile("data/orders.txt");
 
@@ -93,7 +98,7 @@ void viewOrders() {
 
 	cout << "\n--- Past Orders ---\n";
 	while (orderFile >> item >> price) {
-		cout << item << " - " << price << " лв." << endl;
+		cout << item << " - " << price << " lv." << endl;
 		hasOrders = true;
 	}
 
@@ -106,10 +111,10 @@ void viewOrders() {
 
 struct OrderItem {
 	string name;
-	int count;
+	int count = 0;
 };
 
-// Функция за сортиране на поръчките
+// Function to sort orders alphabetically
 void sortOrders(OrderItem orders[], int size) {
 	for (int i = 0; i < size - 1; i++) {
 		for (int j = i + 1; j < size; j++) {
@@ -122,6 +127,7 @@ void sortOrders(OrderItem orders[], int size) {
 	}
 }
 
+// Function to view sorted orders by item name and count
 void viewSortedOrders() {
 	ifstream orderFile("data/orders.txt");
 
@@ -130,17 +136,17 @@ void viewSortedOrders() {
 		return;
 	}
 
-	OrderItem orders[100]; // Масив за поръчките
+	OrderItem orders[100];  // Array to store orders
 	int orderCount = 0;
 
 	string item;
 	double price;
 
-	// Четене на поръчките и добавяне към масива
+	// Read orders and add to the array
 	while (orderFile >> item >> price) {
 		bool found = false;
 
-		// Проверка дали артикулът вече е добавен
+		// Check if the item is already added
 		for (int i = 0; i < orderCount; i++) {
 			if (orders[i].name == item) {
 				orders[i].count++;
@@ -149,7 +155,7 @@ void viewSortedOrders() {
 			}
 		}
 
-		// Добавяне на нов артикул, ако не е намерен
+		// Add new item if not found
 		if (!found) {
 			orders[orderCount].name = item;
 			orders[orderCount].count = 1;
@@ -164,16 +170,17 @@ void viewSortedOrders() {
 		return;
 	}
 
-	// Сортиране на артикулите по азбучен ред
+	// Sort items alphabetically
 	sortOrders(orders, orderCount);
 
-	// Извеждане на резултата
+	// Display the result
 	cout << "\n--- Sorted Orders ---\n";
 	for (int i = 0; i < orderCount; i++) {
 		cout << orders[i].name << " - " << orders[i].count << " orders\n";
 	}
 }
 
+// Function to view daily revenue
 void viewDailyRevenue() {
 	ifstream orderFile("data/orders.txt");
 
@@ -186,18 +193,19 @@ void viewDailyRevenue() {
 	double price;
 	double totalRevenue = 0;
 
-	// Сумиране на цените от всички поръчки
+	// Sum prices from all orders
 	while (orderFile >> item >> price) {
 		totalRevenue += price;
 	}
 
 	orderFile.close();
 
-	// Показване на резултата
+	// Display the result
 	cout << "\n--- Daily Revenue ---\n";
-	cout << "Total Revenue: " << totalRevenue << " лв.\n";
+	cout << "Total Revenue: " << totalRevenue << " lv.\n";
 }
 
+// Function to generate a daily report
 void generateReport() {
 	ifstream orderFile("data/orders.txt");
 
@@ -210,32 +218,34 @@ void generateReport() {
 	string item;
 	double price;
 
-	// Изчисляване на общия оборот
+	// Calculate total revenue
 	while (orderFile >> item >> price) {
 		totalRevenue += price;
 	}
 	orderFile.close();
 
-	// Получаване на текущата дата
+	// Get current date using localtime_s
 	time_t now = time(0);
-	tm* ltm = localtime(&now);
-	int day = ltm->tm_mday;
-	int month = 1 + ltm->tm_mon;
-	int year = 1900 + ltm->tm_year;
+	tm ltm;
+	localtime_s(&ltm, &now);
 
-	// Записване на отчета във файл
+	int day = ltm.tm_mday;
+	int month = 1 + ltm.tm_mon;
+	int year = 1900 + ltm.tm_year;
+
+	// Write the report to file
 	ofstream reportFile("data/report.txt", ios::app);
 	reportFile << "Date: " << day << "/" << month << "/" << year
-		<< " - Total Revenue: " << totalRevenue << " лв.\n";
+		<< " - Total Revenue: " << totalRevenue << " lv.\n";
 	reportFile.close();
 
-	// Изчистване на orders.txt (зануляване на оборота)
+	// Clear orders.txt (reset daily revenue)
 	ofstream clearOrders("data/orders.txt", ofstream::trunc);
 	clearOrders.close();
 
 	cout << "\n--- Report Generated ---\n";
 	cout << "Total Revenue for " << day << "/" << month << "/" << year
-		<< ": " << totalRevenue << " лв.\n";
+		<< ": " << totalRevenue << " lv.\n";
 	cout << "Orders have been cleared.\n";
 }
 
@@ -262,11 +272,9 @@ void viewTotalRevenueByDate() {
 		int reportDay, reportMonth, reportYear;
 		double revenue;
 
-		// Извличане на датата и оборота от реда
-		sscanf(line.c_str(), "Date: %d/%d/%d - Total Revenue: %lf лв.",
+		sscanf_s(line.c_str(), "Date: %d/%d/%d - Total Revenue: %lf lv.",
 			&reportDay, &reportMonth, &reportYear, &revenue);
 
-		// Проверка дали датата е след или равна на началната дата
 		if (reportYear > startYear ||
 			(reportYear == startYear && reportMonth > startMonth) ||
 			(reportYear == startYear && reportMonth == startMonth && reportDay >= startDay)) {
@@ -281,5 +289,3 @@ void viewTotalRevenueByDate() {
 
 	reportFile.close();
 }
-
-
