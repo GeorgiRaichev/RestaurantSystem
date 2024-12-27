@@ -239,4 +239,47 @@ void generateReport() {
 	cout << "Orders have been cleared.\n";
 }
 
+void viewTotalRevenueByDate() {
+	ifstream reportFile("data/report.txt");
+
+	if (!reportFile) {
+		cout << "Error: Report file not found.\n";
+		return;
+	}
+
+	int startDay, startMonth, startYear;
+	char slash;
+
+	cout << "Enter start date (dd/mm/yyyy): ";
+	cin >> startDay >> slash >> startMonth >> slash >> startYear;
+
+	string line;
+	bool found = false;
+
+	cout << "\n--- Reports from " << startDay << "/" << startMonth << "/" << startYear << " to now ---\n";
+
+	while (getline(reportFile, line)) {
+		int reportDay, reportMonth, reportYear;
+		double revenue;
+
+		// Извличане на датата и оборота от реда
+		sscanf(line.c_str(), "Date: %d/%d/%d - Total Revenue: %lf лв.",
+			&reportDay, &reportMonth, &reportYear, &revenue);
+
+		// Проверка дали датата е след или равна на началната дата
+		if (reportYear > startYear ||
+			(reportYear == startYear && reportMonth > startMonth) ||
+			(reportYear == startYear && reportMonth == startMonth && reportDay >= startDay)) {
+			cout << line << endl;
+			found = true;
+		}
+	}
+
+	if (!found) {
+		cout << "No reports found from this date.\n";
+	}
+
+	reportFile.close();
+}
+
 
