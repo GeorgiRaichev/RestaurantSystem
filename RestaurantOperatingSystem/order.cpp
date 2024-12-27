@@ -147,20 +147,24 @@ struct OrderItem {
 	int count = 0;
 };
 
-// Function to sort orders alphabetically
-void sortOrders(OrderItem orders[], int size) {
-	for (int i = 0; i < size - 1; i++) {
-		for (int j = i + 1; j < size; j++) {
-			if (orders[i].name > orders[j].name) {
-				OrderItem temp = orders[i];
-				orders[i] = orders[j];
-				orders[j] = temp;
+// Function to sort orders alphabetically (Selection Sort)
+void sortOrders(OrderItem orders[], int orderCount) {
+	for (int i = 0; i < orderCount - 1; i++) {
+		int minIndex = i;
+		for (int j = i + 1; j < orderCount; j++) {
+			if (orders[j].name < orders[minIndex].name) {
+				minIndex = j;
 			}
+		}
+		// Swap if a smaller element is found
+		if (minIndex != i) {
+			OrderItem temp = orders[i];
+			orders[i] = orders[minIndex];
+			orders[minIndex] = temp;
 		}
 	}
 }
 
-// Function to view sorted orders by item name and count
 void viewSortedOrders() {
 	ifstream orderFile("orders.txt");
 
@@ -174,9 +178,10 @@ void viewSortedOrders() {
 
 	string item;
 	double price;
+	string currency;  // Variable to read "lv."
 
 	// Read orders and add to the array
-	while (orderFile >> item >> price) {
+	while (orderFile >> item >> price >> currency) {
 		bool found = false;
 
 		// Check if the item is already added
@@ -190,6 +195,10 @@ void viewSortedOrders() {
 
 		// Add new item if not found
 		if (!found) {
+			if (orderCount >= 100) {
+				cout << "Error: Maximum order limit reached (100).\n";
+				break;
+			}
 			orders[orderCount].name = item;
 			orders[orderCount].count = 1;
 			orderCount++;
@@ -203,7 +212,7 @@ void viewSortedOrders() {
 		return;
 	}
 
-	// Sort items alphabetically
+	// Sort the items alphabetically
 	sortOrders(orders, orderCount);
 
 	// Display the result
