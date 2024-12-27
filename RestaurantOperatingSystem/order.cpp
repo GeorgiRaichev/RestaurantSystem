@@ -7,8 +7,8 @@ using namespace std;
 
 // Function to add an order
 void addOrder() {
-	ifstream menuFile("menu.txt");  // Open the menu file
-	ofstream orderFile("orders.txt", ios::app);  // Append the order to the file
+	ifstream menuFile("menu.txt");
+	ofstream orderFile("orders.txt", ios::app);  // Append mode to avoid overwriting
 
 	if (!menuFile) {
 		cout << "Error: Menu file not found.\n";
@@ -97,28 +97,27 @@ void cancelOrder() {
 
 // Function to view all past orders
 void viewOrders() {
-	ifstream orderFile("orders.txt");
+    ifstream orderFile("orders.txt");
 
-	if (!orderFile) {
-		cout << "Error: Orders file not found.\n";
-		return;
-	}
+    if (!orderFile) {
+        cout << "Error: Orders file not found.\n";
+        return;
+    }
 
-	string item;
-	double price;
-	bool hasOrders = false;
+    string line;
+    bool hasOrders = false;
 
-	cout << "\n--- Past Orders ---\n";
-	while (orderFile >> item >> price) {
-		cout << item << " - " << price << " lv." << endl;
-		hasOrders = true;
-	}
+    cout << "\n--- Past Orders ---\n";
+    while (getline(orderFile, line)) {
+        cout << line << endl;
+        hasOrders = true;
+    }
 
-	if (!hasOrders) {
-		cout << "No orders found.\n";
-	}
+    if (!hasOrders) {
+        cout << "No orders found.\n";
+    }
 
-	orderFile.close();
+    orderFile.close();
 }
 
 struct OrderItem {
