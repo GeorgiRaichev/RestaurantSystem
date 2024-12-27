@@ -224,6 +224,7 @@ void viewSortedOrders() {
 
 // Function to view daily revenue
 void viewDailyRevenue() {
+	// Open the orders file for reading
 	ifstream orderFile("orders.txt");
 
 	if (!orderFile) {
@@ -233,11 +234,25 @@ void viewDailyRevenue() {
 
 	string item;
 	double price;
+	string currency;  
 	double totalRevenue = 0;
 
-	// Sum prices from all orders
-	while (orderFile >> item >> price) {
+	// Read orders and sum the prices
+	while (orderFile >> item >> price >> currency) {
+		// Validate that the currency is "lv."
+		if (currency != "lv.") {
+			cout << "Warning: Unexpected currency '" << currency << "' for item '" << item << "'. Skipping this entry.\n";
+			continue;
+		}
+
 		totalRevenue += price;
+	}
+
+	// Check for any read errors (optional)
+	if (orderFile.bad()) {
+		cout << "Error: An I/O error occurred while reading the orders file.\n";
+		orderFile.close();
+		return;
 	}
 
 	orderFile.close();
