@@ -43,7 +43,7 @@ void addOrder() {
 
 // Function to cancel an order
 void cancelOrder() {
-	// Първи проход: Намерете номера на реда на последната поръчка за дадения артикул
+	// First pass: Find the line number of the last order for the given item
 	ifstream orderFile("orders.txt");
 	if (!orderFile) {
 		cout << "Error: Orders file not found.\n";
@@ -60,7 +60,7 @@ void cancelOrder() {
 
 	while (getline(orderFile, line)) {
 		lineNumber++;
-		// Предполага се, че името на артикула е първата дума в реда
+		// It is assumed that the item name is the first word in the line
 		size_t pos = line.find(' ');
 		if (pos != string::npos) {
 			string currentItem = line.substr(0, pos);
@@ -76,7 +76,7 @@ void cancelOrder() {
 		return;
 	}
 
-	// Втори проход: Копирайте всички редове във временен файл, като прескочите последната поява
+	// Second pass: Copy all lines to a temporary file, skipping the last occurrence
 	ifstream orderFileSecondPass("orders.txt");
 	if (!orderFileSecondPass) {
 		cout << "Error: Orders file not found on second pass.\n";
@@ -94,7 +94,7 @@ void cancelOrder() {
 	while (getline(orderFileSecondPass, line)) {
 		currentLine++;
 		if (currentLine == lastOccurrenceLine && !canceled) {
-			// Прескачаме този ред (т.е., го изтриваме)
+			// Skip this line
 			cout << itemName << " order canceled successfully.\n";
 			canceled = true;
 			continue;
@@ -105,7 +105,7 @@ void cancelOrder() {
 	orderFileSecondPass.close();
 	tempFile.close();
 
-	// Замяна на стария файл с обновения
+	// Replace the old file with the updated one
 	if (remove("orders.txt") != 0) {
 		cout << "Error: Failed to remove old orders file.\n";
 		return;
